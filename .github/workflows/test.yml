@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  push:
+    paths:
+      - "*.py"
+      - "src/**"
+      - "tests/**"
+      - "requirements*.txt"
+      - ".github/workflows/test.yml"
+  pull_request:
+    paths:
+      - "*.py"
+      - "src/**"
+      - "tests/**"
+      - "requirements*.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run tests
+        run: pytest -q
