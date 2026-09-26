@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 from pathlib import Path
 
@@ -8,7 +9,15 @@ import pandas as pd
 
 from src.config import CURRENT_FILE, HISTORY_DIR, LOCAL_DIR, LOCAL_HISTORY_FILE, TARGET_YEARS
 from src.downloader import discover_historical_urls, discover_latest_candidates, download_to_temp, fetch_scop_html
-from src.incremental import add_establishment_key, append_monthly_history, build_current, detect_changes
+from src.incremental import (
+    add_establishment_key,
+    append_monthly_history,
+    build_current,
+    build_current_from_history,
+    detect_new_history_events,
+    history_partition_paths,
+    read_history_partition,
+)
 from src.parser import parse_download
 
 
@@ -43,6 +52,55 @@ def _print_quality_summary(history: pd.DataFrame) -> None:
     print(f"Registros con fecha inválida: {invalid_date:,}")
 
 
+def _summarize_history_files() -> dict[str, object]:
+    summary: dict[str, object] = {
+        "rows_by_year": {str(year): 0 for year in TARGET_YEARS},
+        "rows_total": 0,
+        "invalid_dates": 0,
+        "unique_establishments": 0,
+        "products": [],
+        "partitions": [],
+    }
+    establishments: set[str] = set()
+    products: set[str] = set()
+
+    for path in history_partition_paths(HISTORY_DIR):
+        frame = read_history_partition(path)
+        dates = pd.to_datetime(frame.get("FECHA_PRECIO"), errors="coerce")
+        summary["rows_total"] = int(summary["rows_total"]) + len(frame)
+        summary["invalid_dates"] = int(summary["invalid_dates"]) + int(dates.isna().sum())
+        for year, count in dates.dt.year.value_counts(dropna=True).items():
+            key = str(int(year))
+            rows_by_year = summary["rows_by_year"]
+            assert isinstance(rows_by_year, dict)
+            rows_by_year[key] = int(rows_by_year.get(key, 0)) + int(count)
+        if "ESTABLECIMIENTO_KEY" in frame.columns:
+            establishments.update(frame["ESTABLECIMIENTO_KEY"].dropna().astype(str).unique())
+        if "PRODUCTO" in frame.columns:
+            products.update(frame["PRODUCTO"].dropna().astype(str).unique())
+        partitions = summary["partitions"]
+        assert isinstance(partitions, list)
+        partitions.append({"file": path.name, "rows": len(frame), "bytes": path.stat().st_size})
+
+    summary["unique_establishments"] = len(establishments)
+    summary["products"] = sorted(products)
+    return summary
+
+
+def _print_quality_summary_from_files(summary: dict[str, object]) -> None:
+    print("\n=== RESUMEN DE CALIDAD ===")
+    rows_by_year = summary["rows_by_year"]
+    assert isinstance(rows_by_year, dict)
+    for year in TARGET_YEARS:
+        print(f"Registros {year}: {int(rows_by_year.get(str(year), 0)):,}")
+    print(f"Establecimientos únicos: {int(summary['unique_establishments']):,}")
+    products = summary["products"]
+    assert isinstance(products, list)
+    print(f"Productos únicos: {len(products):,}")
+    print(f"Registros históricos totales: {int(summary['rows_total']):,}")
+    print(f"Registros con fecha inválida: {int(summary['invalid_dates']):,}")
+
+
 def run_discover() -> None:
     print("Consultando página oficial SCOP...")
     html = fetch_scop_html()
@@ -65,58 +123,68 @@ def run_discover() -> None:
 def run_backfill(years: list[int]) -> None:
     html = fetch_scop_html()
     urls = discover_historical_urls(years, html=html)
-    frames: list[pd.DataFrame] = []
+    total_removed = 0
+    processed: list[dict[str, object]] = []
 
     for year in years:
         url = urls[year]
-        print(f"\n[{year}] Descargando: {url}")
+        print(f"\n[{year}] Descargando: {url}", flush=True)
         path = download_to_temp(url)
         try:
+            print(f"[{year}] Procesando: {path.name}", flush=True)
             frame = parse_download(path)
             frame["ANIO_FUENTE"] = year
             frame["URL_FUENTE"] = url
-            print(f"[{year}] Filas procesadas: {len(frame):,}")
-            frames.append(frame)
+            print(f"[{year}] Filas procesadas: {len(frame):,}", flush=True)
+            print(f"[{year}] Consolidando claves y deduplicando eventos...", flush=True)
+            frame = add_establishment_key(frame)
+            before = len(frame)
+            frame = frame.drop_duplicates(["ESTABLECIMIENTO_KEY", "PRODUCTO", "FECHA_PRECIO", "PRECIO"], keep="last")
+            removed = before - len(frame)
+            total_removed += removed
+            print(f"[{year}] Duplicados exactos eliminados: {removed:,}", flush=True)
+            print(f"[{year}] Escribiendo particiones Parquet en: {HISTORY_DIR}", flush=True)
+            written = append_monthly_history(frame, HISTORY_DIR)
+            processed.append({"year": year, "url": url, "rows": len(frame), "duplicates_removed": removed})
+            print(f"[{year}] Particiones actualizadas: {len(written):,}", flush=True)
         finally:
             _cleanup_download(path)
 
-    history = add_establishment_key(pd.concat(frames, ignore_index=True, sort=False))
-
-    sig_cols = [c for c in ("ESTABLECIMIENTO_KEY", "PRODUCTO", "FECHA_PRECIO", "PRECIO") if c in history.columns]
-    before = len(history)
-    if len(sig_cols) == 4:
-        history = history.drop_duplicates(sig_cols, keep="last")
-    removed = before - len(history)
-
     LOCAL_DIR.mkdir(parents=True, exist_ok=True)
-    history.to_csv(LOCAL_HISTORY_FILE, index=False, encoding="utf-8-sig")
-    append_monthly_history(history, HISTORY_DIR)
+    summary = _summarize_history_files()
+    manifest = {
+        "format": "monthly_parquet",
+        "history_dir": str(HISTORY_DIR),
+        "processed": processed,
+        "summary": summary,
+    }
+    print(f"Escribiendo manifiesto local: {LOCAL_HISTORY_FILE}", flush=True)
+    LOCAL_HISTORY_FILE.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    current = build_current(history)
+    print(f"Construyendo estado actual: {CURRENT_FILE}", flush=True)
+    current = build_current_from_history(HISTORY_DIR)
     _save_current(current)
 
-    _print_quality_summary(history)
-    print(f"Duplicados exactos eliminados: {removed:,}")
-    print(f"\nHistórico local: {LOCAL_HISTORY_FILE}")
+    _print_quality_summary_from_files(summary)
+    print(f"Duplicados exactos eliminados: {total_removed:,}")
+    print(f"\nManifiesto local: {LOCAL_HISTORY_FILE}")
     print(f"Estado actual: {CURRENT_FILE}")
 
 
-def _choose_update_url(cli_url: str | None) -> str:
+def _choose_update_urls(cli_url: str | None) -> list[str]:
     if cli_url:
-        return cli_url
+        return [url.strip() for url in cli_url.split(",") if url.strip()]
 
     from src.config import configured_latest_url
 
     env_url = configured_latest_url()
     if env_url:
-        return env_url
+        return [url.strip() for url in env_url.split(",") if url.strip()]
 
     html = fetch_scop_html()
     candidates = discover_latest_candidates(html=html)
-    if len(candidates) == 1:
-        return candidates[0]
-    if len(candidates) > 1:
-        raise RuntimeError("Hay múltiples candidatos. Ejecuta --mode discover y elige uno con --source-url.")
+    if candidates:
+        return candidates
 
     raise RuntimeError(
         "No se pudo descubrir automáticamente la fuente de 'Registros de últimos precios'. "
@@ -126,17 +194,22 @@ def _choose_update_url(cli_url: str | None) -> str:
 
 
 def run_update(source_url: str | None) -> None:
-    url = _choose_update_url(source_url)
-    print(f"Fuente incremental: {url}")
-    path = download_to_temp(url)
-    try:
-        snapshot = parse_download(path)
-        snapshot["URL_FUENTE"] = url
-    finally:
-        _cleanup_download(path)
+    urls = _choose_update_urls(source_url)
+    frames: list[pd.DataFrame] = []
+    for url in urls:
+        print(f"Fuente incremental: {url}")
+        path = download_to_temp(url)
+        try:
+            frame = parse_download(path)
+            frame["URL_FUENTE"] = url
+            frames.append(frame)
+        finally:
+            _cleanup_download(path)
+
+    snapshot = pd.concat(frames, ignore_index=True, sort=False)
 
     current = _load_current()
-    changes = detect_changes(snapshot, current)
+    changes = detect_new_history_events(snapshot, current)
 
     if changes.empty:
         print("Sin cambios nuevos.")

@@ -30,9 +30,12 @@ ALIASES: dict[str, list[str]] = {
         "CODIGO_ESTABLECIMIENTO",
         "CODIGO_DE_ESTABLECIMIENTO",
         "CODIGO_OSINERGMIN",
+        "CODIGO_OSINERG",
+        "REGISTRO_DE_HIDROCARBUROS",
+        "NRO_REGISTRO",
         "CODIGO",
     ],
-    "RAZON_SOCIAL": ["RAZON_SOCIAL", "RAZON"],
+    "RAZON_SOCIAL": ["RAZON_SOCIAL", "RAZON", "RAZON_SOCIAL"],
     "NOMBRE_COMERCIAL": [
         "NOMBRE_COMERCIAL",
         "NOMBRE_ESTABLECIMIENTO",
@@ -60,6 +63,8 @@ ALIASES: dict[str, list[str]] = {
     "FECHA_PRECIO": [
         "FECHA_PRECIO",
         "FECHA_REGISTRO",
+        "FCHA_REGISTRO",
+        "FECHA_DE_REGISTRO",
         "FECHA_HORA",
         "FECHA_ACTUALIZACION",
         "FECHA_MODIFICACION",
@@ -93,7 +98,21 @@ def _header_score(row: pd.Series) -> int:
 
 
 def _detect_header_excel(source: object, sheet_name: str | int = 0) -> int:
-    preview = pd.read_excel(source, sheet_name=sheet_name, header=None, nrows=30)
+    engines = ["calamine", "openpyxl"] if _can_use_calamine() else ["openpyxl"]
+    last_error: Exception | None = None
+    for engine in engines:
+        try:
+            preview = pd.read_excel(source, sheet_name=sheet_name, header=None, nrows=30, engine=engine)
+            break
+        except Exception as exc:
+            last_error = exc
+            if hasattr(source, "seek"):
+                source.seek(0)
+    else:
+        raise RuntimeError(f"No se pudo inspeccionar Excel: {last_error}")
+
+    if hasattr(source, "seek"):
+        source.seek(0)
     scores = preview.apply(_header_score, axis=1)
     if scores.empty:
         return 0
@@ -103,7 +122,24 @@ def _detect_header_excel(source: object, sheet_name: str | int = 0) -> int:
 
 def read_excel_smart(source: object, sheet_name: str | int = 0) -> pd.DataFrame:
     header = _detect_header_excel(source, sheet_name=sheet_name)
-    return pd.read_excel(source, sheet_name=sheet_name, header=header)
+    engines = ["calamine", "openpyxl"] if _can_use_calamine() else ["openpyxl"]
+    last_error: Exception | None = None
+    for engine in engines:
+        try:
+            return pd.read_excel(source, sheet_name=sheet_name, header=header, engine=engine)
+        except Exception as exc:
+            last_error = exc
+            if hasattr(source, "seek"):
+                source.seek(0)
+    raise RuntimeError(f"No se pudo leer Excel: {last_error}")
+
+
+def _can_use_calamine() -> bool:
+    try:
+        import python_calamine  # noqa: F401
+    except Exception:
+        return False
+    return True
 
 
 def read_csv_smart(source: object) -> pd.DataFrame:
@@ -132,7 +168,7 @@ def _looks_like_xlsx_zip(path: Path) -> bool:
 
 
 def _parse_excel_path(path: Path) -> list[pd.DataFrame]:
-    book = pd.ExcelFile(path)
+    book = _excel_file(path)
     frames: list[pd.DataFrame] = []
     for sheet in book.sheet_names:
         try:
@@ -147,7 +183,7 @@ def _parse_excel_path(path: Path) -> list[pd.DataFrame]:
 
 def _parse_excel_bytes(payload: bytes, name: str) -> list[pd.DataFrame]:
     buffer = io.BytesIO(payload)
-    book = pd.ExcelFile(buffer)
+    book = _excel_file(buffer)
     frames: list[pd.DataFrame] = []
     for sheet in book.sheet_names:
         try:
@@ -160,6 +196,19 @@ def _parse_excel_bytes(payload: bytes, name: str) -> list[pd.DataFrame]:
         except Exception:
             continue
     return frames
+
+
+def _excel_file(source: object) -> pd.ExcelFile:
+    engines = ["calamine", "openpyxl"] if _can_use_calamine() else ["openpyxl"]
+    last_error: Exception | None = None
+    for engine in engines:
+        try:
+            return pd.ExcelFile(source, engine=engine)
+        except Exception as exc:
+            last_error = exc
+            if hasattr(source, "seek"):
+                source.seek(0)
+    raise RuntimeError(f"No se pudo abrir Excel: {last_error}")
 
 
 def parse_download(path: Path) -> pd.DataFrame:
@@ -229,6 +278,13 @@ def _to_price(series: pd.Series) -> pd.Series:
     return pd.to_numeric(cleaned, errors="coerce")
 
 
+def _to_datetime(series: pd.Series) -> pd.Series:
+    iso = pd.to_datetime(series, format="%Y-%m-%d %H:%M:%S", errors="coerce")
+    fallback_source = series.astype("string").where(iso.isna())
+    fallback = pd.to_datetime(fallback_source, dayfirst=True, errors="coerce")
+    return iso.fillna(fallback)
+
+
 def canonicalize(frame: pd.DataFrame) -> pd.DataFrame:
     frame = frame.copy()
     frame.columns = _dedupe_columns([normalize_column(col) for col in frame.columns])
@@ -249,10 +305,10 @@ def canonicalize(frame: pd.DataFrame) -> pd.DataFrame:
             date_text = frame["FECHA_PRECIO"].astype("string").str.strip()
             time_text = frame["HORA_PRECIO"].astype("string").str.strip()
             combined_dt = pd.to_datetime(date_text + " " + time_text, dayfirst=True, errors="coerce")
-            date_only_dt = pd.to_datetime(frame["FECHA_PRECIO"], dayfirst=True, errors="coerce")
+            date_only_dt = _to_datetime(frame["FECHA_PRECIO"])
             frame["FECHA_PRECIO"] = combined_dt.fillna(date_only_dt)
         else:
-            frame["FECHA_PRECIO"] = pd.to_datetime(frame["FECHA_PRECIO"], dayfirst=True, errors="coerce")
+            frame["FECHA_PRECIO"] = _to_datetime(frame["FECHA_PRECIO"])
 
     if "PRECIO" in frame.columns:
         frame = frame.loc[frame["PRECIO"].notna()].copy()
