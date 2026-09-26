@@ -42,7 +42,7 @@ jobs:
       - name: Commit data changes
         shell: bash
         run: |
-          if git diff --quiet -- data/estado_actual.csv data/history/; then
+          if [[ -z "$(git status --porcelain -- data/estado_actual.csv data/history/)" ]]; then
             echo "No hay cambios para guardar."
             exit 0
           fi
@@ -50,5 +50,11 @@ jobs:
           git config user.name "fuel-data-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/estado_actual.csv data/history/
+
+          if git diff --cached --quiet; then
+            echo "No hay cambios staged para guardar."
+            exit 0
+          fi
+
           git commit -m "data: update fuel prices"
           git push
