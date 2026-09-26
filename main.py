@@ -228,9 +228,24 @@ def run_update(source_url: str | None) -> None:
     print(f"Actualizado: {CURRENT_FILE}")
 
 
+def run_compact() -> None:
+    compacted = compact_closed_months()
+    if not compacted:
+        print("No hay meses cerrados pendientes de compactación.")
+        return
+
+    print(f"Meses compactados: {len(compacted):,}")
+    for path in compacted:
+        print(f"Compactado: {path}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Peru fuel data pipeline")
-    parser.add_argument("--mode", choices=("discover", "backfill", "update"), required=True)
+    parser.add_argument(
+        "--mode",
+        choices=("discover", "backfill", "update", "compact"),
+        required=True,
+    )
     parser.add_argument("--years", nargs="+", type=int, default=list(TARGET_YEARS))
     parser.add_argument("--source-url", default=None)
     return parser.parse_args()
