@@ -1,0 +1,1 @@
+"""Peru fuel data pipeline."""
