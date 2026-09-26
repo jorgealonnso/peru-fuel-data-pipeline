@@ -6,7 +6,7 @@ on:
       - ".github/workflows/smoke_update.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   smoke-update:
@@ -26,16 +26,27 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run incremental update smoke test
+      - name: Run incremental update
         env:
           FUEL_LATEST_URL: ${{ vars.FUEL_LATEST_URL }}
         run: python main.py --mode update
 
-      - name: Show resulting changes
-        if: always()
+      - name: Commit data changes
         shell: bash
         run: |
-          echo "=== Git status ==="
-          git status --short
-          echo "=== Incremental files ==="
-          find data/history -maxdepth 1 -name '*-incremental.csv' -print || true
+          if [[ -z "$(git status --porcelain -- data/estado_actual.csv data/history/)" ]]; then
+            echo "No hay cambios para guardar."
+            exit 0
+          fi
+
+          git config user.name "fuel-data-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/estado_actual.csv data/history/
+
+          if git diff --cached --quiet; then
+            echo "No hay cambios staged para guardar."
+            exit 0
+          fi
+
+          git commit -m "data: first GitHub incremental update"
+          git push
