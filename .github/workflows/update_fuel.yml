@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: fuel-price-update
+  group: fuel-data-pipeline
   cancel-in-progress: false
 
 jobs:
@@ -42,14 +42,14 @@ jobs:
       - name: Commit data changes
         shell: bash
         run: |
-          if [[ -z "$(git status --porcelain -- data/estado_actual.csv data/history/)" ]]; then
+          if [[ -z "$(git status --porcelain -- data/estado_actual.csv data/history/ data/incremental/)" ]]; then
             echo "No hay cambios para guardar."
             exit 0
           fi
 
           git config user.name "fuel-data-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/estado_actual.csv data/history/
+          git add data/estado_actual.csv data/history/ data/incremental/ data/incremental/
 
           if git diff --cached --quiet; then
             echo "No hay cambios staged para guardar."
