@@ -11,6 +11,7 @@ from src.config import CURRENT_FILE, HISTORY_DIR, LOCAL_DIR, LOCAL_HISTORY_FILE,
 from src.downloader import discover_historical_urls, discover_latest_candidates, download_to_temp, fetch_scop_html
 from src.incremental import (
     add_establishment_key,
+    append_incremental_history,
     append_monthly_history,
     build_current,
     build_current_from_history,
@@ -212,12 +213,10 @@ def run_update(source_url: str | None) -> None:
     changes = detect_new_history_events(snapshot, current)
 
     if changes.empty:
-        print("Sin cambios nuevos.")
-        if current is not None and not current.empty:
-            _save_current(build_current(current))
+        print("Sin cambios nuevos. No se modifica ningún archivo.")
         return
 
-    written = append_monthly_history(changes)
+    written = append_incremental_history(changes)
 
     combined = changes if current is None or current.empty else pd.concat([current, changes], ignore_index=True, sort=False)
     _save_current(build_current(combined))
