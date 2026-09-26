@@ -1,0 +1,41 @@
+name: Smoke test fuel update
+
+on:
+  push:
+    paths:
+      - ".github/workflows/smoke_update.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run incremental update smoke test
+        env:
+          FUEL_LATEST_URL: ${{ vars.FUEL_LATEST_URL }}
+        run: python main.py --mode update
+
+      - name: Show resulting changes
+        if: always()
+        shell: bash
+        run: |
+          echo "=== Git status ==="
+          git status --short
+          echo "=== Incremental files ==="
+          find data/history -maxdepth 1 -name '*-incremental.csv' -print || true
