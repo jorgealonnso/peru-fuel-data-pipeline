@@ -20,6 +20,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT_DIR / "data"
 LOCAL_DIR = DATA_DIR / "local"
 HISTORY_DIR = DATA_DIR / "history"
+INCREMENTAL_DIR = DATA_DIR / "incremental"
 CURRENT_FILE = DATA_DIR / "estado_actual.csv"
 LOCAL_HISTORY_FILE = LOCAL_DIR / "historico_precios_manifest.json"
 
