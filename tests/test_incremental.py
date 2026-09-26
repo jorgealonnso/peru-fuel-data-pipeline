@@ -4,6 +4,7 @@ from src.incremental import (
     add_establishment_key,
     append_incremental_history,
     build_current,
+    compact_closed_months,
     detect_changes,
     detect_new_history_events,
 )
@@ -147,19 +148,18 @@ def test_excel_decimal_ids_share_the_same_key():
     assert frame.loc[0, "ESTABLECIMIENTO_KEY"] == "ID:100010"
 
 
-def test_scheduled_updates_use_append_only_csv(tmp_path):
-    history_dir = tmp_path / "history"
+def test_scheduled_updates_use_separate_staging_directory(tmp_path):
+    incremental_dir = tmp_path / "incremental"
 
     first = pd.DataFrame([_row(15.5, "2026-09-26 10:30:00")])
     second = pd.DataFrame([_row(15.7, "2026-09-26 13:20:00")])
 
-    first_paths = append_incremental_history(first, history_dir)
-    second_paths = append_incremental_history(second, history_dir)
+    first_paths = append_incremental_history(first, incremental_dir)
+    second_paths = append_incremental_history(second, incremental_dir)
 
-    expected = history_dir / "2026-09-incremental.csv"
+    expected = incremental_dir / "2026-09.csv"
     assert first_paths == [expected]
     assert second_paths == [expected]
-    assert not (history_dir / "2026-09.parquet").exists()
 
     stored = pd.read_csv(expected)
     assert len(stored) == 2
@@ -170,3 +170,54 @@ def test_current_state_does_not_persist_relative_age():
     current = build_current(pd.DataFrame([_row(15.5, "2026-09-26 10:30:00")]))
 
     assert "DIAS_SIN_ACTUALIZAR" not in current.columns
+
+
+def test_closed_month_is_compacted_to_parquet(tmp_path):
+    history_dir = tmp_path / "history"
+    incremental_dir = tmp_path / "incremental"
+    history_dir.mkdir()
+    incremental_dir.mkdir()
+
+    pd.DataFrame([_row(15.5, "2026-09-20 10:00:00")]).to_parquet(
+        history_dir / "2026-09.parquet",
+        index=False,
+    )
+    append_incremental_history(
+        pd.DataFrame([_row(15.7, "2026-09-26 13:20:00")]),
+        incremental_dir,
+    )
+
+    compacted = compact_closed_months(
+        history_dir=history_dir,
+        incremental_dir=incremental_dir,
+        current_period="2026-10",
+    )
+
+    target = history_dir / "2026-09.parquet"
+    assert compacted == [target]
+    assert target.exists()
+    assert not (incremental_dir / "2026-09.csv").exists()
+
+    stored = pd.read_parquet(target)
+    assert len(stored) == 2
+    assert sorted(stored["PRECIO"].astype(float).tolist()) == [15.5, 15.7]
+
+
+def test_current_month_is_not_compacted(tmp_path):
+    history_dir = tmp_path / "history"
+    incremental_dir = tmp_path / "incremental"
+    incremental_dir.mkdir()
+
+    append_incremental_history(
+        pd.DataFrame([_row(15.7, "2026-09-26 13:20:00")]),
+        incremental_dir,
+    )
+
+    compacted = compact_closed_months(
+        history_dir=history_dir,
+        incremental_dir=incremental_dir,
+        current_period="2026-09",
+    )
+
+    assert compacted == []
+    assert (incremental_dir / "2026-09.csv").exists()
