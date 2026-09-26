@@ -1,0 +1,54 @@
+name: Update fuel prices
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Lima (UTC-5): 06:00, 10:00, 14:00, 17:00
+    - cron: "0 11 * * *"
+    - cron: "0 15 * * *"
+    - cron: "0 19 * * *"
+    - cron: "0 22 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fuel-price-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update prices
+        env:
+          FUEL_LATEST_URL: ${{ vars.FUEL_LATEST_URL }}
+        run: python main.py --mode update
+
+      - name: Commit data changes
+        shell: bash
+        run: |
+          if git diff --quiet -- data/estado_actual.csv data/history/; then
+            echo "No hay cambios para guardar."
+            exit 0
+          fi
+
+          git config user.name "fuel-data-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/estado_actual.csv data/history/
+          git commit -m "data: update fuel prices"
+          git push
