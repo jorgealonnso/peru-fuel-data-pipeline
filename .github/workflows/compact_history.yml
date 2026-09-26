@@ -1,0 +1,56 @@
+name: Compact monthly history
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 07:00 Lima on the first day of each month.
+    # The 06:00 update runs first; shared concurrency prevents overlap.
+    - cron: "0 12 1 * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fuel-data-pipeline
+  cancel-in-progress: false
+
+jobs:
+  compact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Compact closed months
+        run: python main.py --mode compact
+
+      - name: Commit compacted history
+        shell: bash
+        run: |
+          if [[ -z "$(git status --porcelain -- data/history/ data/incremental/)" ]]; then
+            echo "No hay meses pendientes de compactación."
+            exit 0
+          fi
+
+          git config user.name "fuel-data-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data/history/ data/incremental/
+
+          if git diff --cached --quiet; then
+            echo "No hay cambios staged para guardar."
+            exit 0
+          fi
+
+          git commit -m "data: compact closed fuel-price months"
+          git push
