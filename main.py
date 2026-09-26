@@ -15,6 +15,7 @@ from src.incremental import (
     append_monthly_history,
     build_current,
     build_current_from_history,
+    compact_closed_months,
     detect_new_history_events,
     history_partition_paths,
     read_history_partition,
