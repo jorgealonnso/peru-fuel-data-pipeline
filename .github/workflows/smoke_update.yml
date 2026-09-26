@@ -1,4 +1,5 @@
 name: Smoke test fuel update
+# One-time idempotency validation
 
 on:
   push:
