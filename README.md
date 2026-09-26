@@ -86,13 +86,32 @@ Cada ejecución:
 
 El histórico inicial queda en **Parquet**, porque es compacto y eficiente para grandes volúmenes.
 
-Las ejecuciones programadas **no reescriben los Parquet mensuales**. Los cambios nuevos se agregan como texto append-only:
+Las ejecuciones programadas **no reescriben los Parquet mensuales**. El repositorio separa dos capas:
 
 ```text
-data/history/YYYY-MM-incremental.csv
+data/history/YYYY-MM.parquet      # histórico permanente / meses consolidados
+data/incremental/YYYY-MM.csv      # staging temporal del mes activo
 ```
 
-Esto evita versionar un archivo binario de varios MB cuatro veces al día y mantiene el historial de Git mucho más liviano.
+El CSV incremental es intencional y temporal: Git versiona muy bien cambios append-only en texto, mientras que reescribir un Parquet binario varias veces al día haría crecer el historial del repositorio innecesariamente.
+
+El día 1 de cada mes GitHub Actions ejecuta automáticamente:
+
+```bash
+python main.py --mode compact
+```
+
+Ese proceso fusiona el staging del mes cerrado con su Parquet, elimina duplicados, reemplaza el Parquet mensual y borra el CSV temporal. Por ejemplo:
+
+```text
+data/history/2026-09.parquet
+        +
+data/incremental/2026-09.csv
+        ↓
+data/history/2026-09.parquet
+```
+
+Después de la compactación, `data/history/` vuelve a contener únicamente Parquet para ese mes. Octubre continúa en `data/incremental/2026-10.csv` hasta su propio cierre.
 
 `data/estado_actual.csv` mantiene una sola fila por establecimiento + producto y se ordena de forma estable para minimizar los diffs de Git.
 
@@ -113,6 +132,8 @@ Equivalentes UTC:
 - 22:00
 
 También permite ejecución manual desde GitHub Actions.
+
+El workflow `.github/workflows/compact_history.yml` corre el **día 1 de cada mes a las 07:00 hora Lima**, después del corte de las 06:00, y compacta automáticamente todos los meses cerrados que tengan staging pendiente. Ambos workflows comparten el mismo grupo de concurrencia para evitar que actualización y compactación se ejecuten al mismo tiempo.
 
 ## Fechas
 
@@ -182,4 +203,6 @@ Cuando la fuente los proporciona, el pipeline conserva:
 
 El backfill 2023-2026 ya fue generado y versionado en particiones mensuales Parquet.
 
-El siguiente control operativo es validar una ejecución real de `update` en GitHub Actions y confirmar que la fuente de precios recientes sea accesible desde el runner sin intervención manual.
+La actualización incremental ya fue validada ejecutándose directamente en GitHub Actions contra las fuentes de últimos precios de OSINERGMIN. Una segunda ejecución consecutiva no generó duplicados.
+
+La compactación mensual también queda automatizada mediante GitHub Actions, por lo que no requiere una PC encendida ni intervención manual.
