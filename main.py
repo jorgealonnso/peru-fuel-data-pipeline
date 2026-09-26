@@ -257,8 +257,10 @@ def main() -> None:
         run_discover()
     elif args.mode == "backfill":
         run_backfill(args.years)
-    else:
+    elif args.mode == "update":
         run_update(args.source_url)
+    else:
+        run_compact()
 
 
 if __name__ == "__main__":
