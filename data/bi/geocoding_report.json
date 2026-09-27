@@ -1,0 +1,771 @@
+{
+  "ambiguous_matches": 0,
+  "approximate_matches": 0,
+  "coverage_by_activity": {
+    "COMERCIALIZADOR DE COMBUSTIBLE PARA EMBARCACIONES": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 6,
+      "unmatched": 6
+    },
+    "COMERCIALIZADORES DE COMBUSTIBLES DE AVIACIÓN": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 13,
+      "unmatched": 13
+    },
+    "DISTRIBUIDOR MAYORISTA DE COMBUSTIBLES LIQUIDOS": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 179,
+      "unmatched": 179
+    },
+    "DISTRIBUIDORES MINORISTAS DE COMBUSTIBLE LIQUIDOS": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 3,
+      "unmatched": 3
+    },
+    "EE.SS con GLP y GNV  ": {
+      "coverage_percent": 96.41,
+      "matched": 242,
+      "total": 251,
+      "unmatched": 9
+    },
+    "EE.SS con GNV": {
+      "coverage_percent": 92.5,
+      "matched": 37,
+      "total": 40,
+      "unmatched": 3
+    },
+    "ESTABLECIMIENTO DE VENTA AL PUBLICO DE GNV": {
+      "coverage_percent": 86.57,
+      "matched": 58,
+      "total": 67,
+      "unmatched": 9
+    },
+    "ESTACIÓN DE CARGA DE GNC": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 1,
+      "unmatched": 1
+    },
+    "ESTACIÓN DE SERVICIO CON GASOCENTRO DE GLP": {
+      "coverage_percent": 98.11,
+      "matched": 1455,
+      "total": 1483,
+      "unmatched": 28
+    },
+    "ESTACIÓN DE SERVICIOS / GRIFOS": {
+      "coverage_percent": 94.21,
+      "matched": 3499,
+      "total": 3714,
+      "unmatched": 215
+    },
+    "GASOCENTRO DE GLP CON ESTABLECIMIENTO DE VENTA AL PUBLICO DE GNV": {
+      "coverage_percent": 90.48,
+      "matched": 19,
+      "total": 21,
+      "unmatched": 2
+    },
+    "GASOCENTROS DE GLP": {
+      "coverage_percent": 96.05,
+      "matched": 73,
+      "total": 76,
+      "unmatched": 3
+    },
+    "GRIFOS FLOTANTES": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 170,
+      "unmatched": 170
+    },
+    "GRIFOS RURALES CON ALMACENAMIENTO EN CILINDROS": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 180,
+      "unmatched": 180
+    },
+    "MAYORISTA DE OTROS PRODUCTOS DERIVADOS DE HIDROCARBUROS": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 2,
+      "unmatched": 2
+    },
+    "PROCESAMIENTO GAS Y LGN": {
+      "coverage_percent": 0.0,
+      "matched": 0,
+      "total": 1,
+      "unmatched": 1
+    }
+  },
+  "coverage_by_department": {
+    "AMAZONAS": {
+      "coverage_percent": 78.9,
+      "matched": 86,
+      "total": 109,
+      "unmatched": 23
+    },
+    "ANCASH": {
+      "coverage_percent": 91.21,
+      "matched": 218,
+      "total": 239,
+      "unmatched": 21
+    },
+    "APURIMAC": {
+      "coverage_percent": 94.55,
+      "matched": 104,
+      "total": 110,
+      "unmatched": 6
+    },
+    "AREQUIPA": {
+      "coverage_percent": 91.91,
+      "matched": 341,
+      "total": 371,
+      "unmatched": 30
+    },
+    "AYACUCHO": {
+      "coverage_percent": 90.7,
+      "matched": 156,
+      "total": 172,
+      "unmatched": 16
+    },
+    "CAJAMARCA": {
+      "coverage_percent": 94.49,
+      "matched": 223,
+      "total": 236,
+      "unmatched": 13
+    },
+    "CUSCO": {
+      "coverage_percent": 85.02,
+      "matched": 386,
+      "total": 454,
+      "unmatched": 68
+    },
+    "HUANCAVELICA": {
+      "coverage_percent": 89.06,
+      "matched": 57,
+      "total": 64,
+      "unmatched": 7
+    },
+    "HUANUCO": {
+      "coverage_percent": 88.36,
+      "matched": 129,
+      "total": 146,
+      "unmatched": 17
+    },
+    "ICA": {
+      "coverage_percent": 88.34,
+      "matched": 197,
+      "total": 223,
+      "unmatched": 26
+    },
+    "JUNIN": {
+      "coverage_percent": 93.54,
+      "matched": 304,
+      "total": 325,
+      "unmatched": 21
+    },
+    "LA LIBERTAD": {
+      "coverage_percent": 91.11,
+      "matched": 287,
+      "total": 315,
+      "unmatched": 28
+    },
+    "LAMBAYEQUE": {
+      "coverage_percent": 88.11,
+      "matched": 252,
+      "total": 286,
+      "unmatched": 34
+    },
+    "LIMA": {
+      "coverage_percent": 93.81,
+      "matched": 1092,
+      "total": 1164,
+      "unmatched": 72
+    },
+    "LORETO": {
+      "coverage_percent": 53.08,
+      "matched": 138,
+      "total": 260,
+      "unmatched": 122
+    },
+    "MADRE DE DIOS": {
+      "coverage_percent": 89.93,
+      "matched": 134,
+      "total": 149,
+      "unmatched": 15
+    },
+    "MOQUEGUA": {
+      "coverage_percent": 70.37,
+      "matched": 38,
+      "total": 54,
+      "unmatched": 16
+    },
+    "PASCO": {
+      "coverage_percent": 93.42,
+      "matched": 71,
+      "total": 76,
+      "unmatched": 5
+    },
+    "PIURA": {
+      "coverage_percent": 86.04,
+      "matched": 265,
+      "total": 308,
+      "unmatched": 43
+    },
+    "PROV. CONST. DEL CALLAO": {
+      "coverage_percent": 59.85,
+      "matched": 82,
+      "total": 137,
+      "unmatched": 55
+    },
+    "PUNO": {
+      "coverage_percent": 83.12,
+      "matched": 394,
+      "total": 474,
+      "unmatched": 80
+    },
+    "SAN MARTIN": {
+      "coverage_percent": 81.0,
+      "matched": 179,
+      "total": 221,
+      "unmatched": 42
+    },
+    "TACNA": {
+      "coverage_percent": 93.94,
+      "matched": 62,
+      "total": 66,
+      "unmatched": 4
+    },
+    "TUMBES": {
+      "coverage_percent": 100.0,
+      "matched": 21,
+      "total": 21,
+      "unmatched": 0
+    },
+    "UCAYALI": {
+      "coverage_percent": 73.57,
+      "matched": 167,
+      "total": 227,
+      "unmatched": 60
+    }
+  },
+  "coverage_percent": 86.72,
+  "establishments_total": 6207,
+  "establishments_with_coordinates": 5383,
+  "establishments_without_coordinates": 824,
+  "exact_matches": 5383,
+  "gis_layers": [
+    {
+      "id": 35,
+      "invalid_coordinates": 0,
+      "name": "Grifo y EESS",
+      "records": 5284,
+      "valid_coordinates": 5284
+    },
+    {
+      "id": 36,
+      "invalid_coordinates": 0,
+      "name": "Gasocentro y EVP GNV",
+      "records": 151,
+      "valid_coordinates": 151
+    }
+  ],
+  "gis_records_invalid_coordinates": 0,
+  "gis_records_total": 5435,
+  "gis_without_match": 82,
+  "matches_by_method": {
+    "CODIGO_OSINERGMIN": 2336,
+    "REGISTRO": 2953,
+    "RUC_UBIGEO_DIRECCION": 94,
+    "UNMATCHED": 824
+  },
+  "point_layer_audit": [
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "LOTE",
+        "COD_POZO",
+        "UBICACION",
+        "TIPO_INST"
+      ],
+      "id": 1,
+      "matching_activities": [],
+      "name": "Pozo",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "LOTE",
+        "COD_POZO"
+      ],
+      "id": 2,
+      "matching_activities": [],
+      "name": "Pozo Inyector",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "NUMERO",
+        "LOTE",
+        "NOMB_INST"
+      ],
+      "id": 3,
+      "matching_activities": [],
+      "name": "Baterías",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "NOMB_INST",
+        "TIPO_INST",
+        "UBICACION",
+        "LOTE",
+        "ZONA"
+      ],
+      "id": 4,
+      "matching_activities": [],
+      "name": "Interior de Baterías",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "NUMERO",
+        "LOTE",
+        "FEC_CREA",
+        "TIPO_INST",
+        "DET_INST"
+      ],
+      "id": 5,
+      "matching_activities": [],
+      "name": "Otras instalaciones (Puntos)",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "NOMBRE_POZ",
+        "YACIMIENTO",
+        "CLASE_POZO",
+        "PROFUNDIDA",
+        "ESTADO_POZ",
+        "LOTE",
+        "COMPAÑÍA_O",
+        "PAÍS",
+        "CUENCA",
+        "REGIÓN",
+        "DEPARTAMEN",
+        "F_ACTUALIZACION",
+        "VERSION",
+        "ESTADO_OSINERGMIN"
+      ],
+      "id": 6,
+      "matching_activities": [],
+      "name": "Pozos petroleros - En producción (Perupetro - Abr 2016)",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "CODIGO_UWI",
+        "NOMBRE_POZ",
+        "YACIMIENTO",
+        "CLASE_POZO",
+        "PROFUNDIDA",
+        "ESTADO_POZ",
+        "LOTE",
+        "COMPAÑÍA_O",
+        "PAÍS",
+        "CUENCA",
+        "REGIÓN",
+        "DEPARTAMEN",
+        "F_ACTUALIZACION",
+        "VERSION",
+        "ESTADO_OSINERGMIN"
+      ],
+      "id": 7,
+      "matching_activities": [],
+      "name": "Pozos petroleros - Abandonados (Perupetro - Abr 2016)",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "NOMB_INST",
+        "ORDEN",
+        "TIPO_INST",
+        "TIPO_INST_PADRE",
+        "NOMB_INST_PADRE",
+        "LOTE",
+        "ADMINISTRADO",
+        "UBICACION"
+      ],
+      "id": 8,
+      "matching_activities": [],
+      "name": "Plataforma en Selva",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "NOMB_INST",
+        "TIPO_INST",
+        "TIPO_INST_PADRE",
+        "NOMB_INST_PADRE",
+        "FECH_CREACION",
+        "LOTE",
+        "ADMINISTRADO",
+        "UBICACION",
+        "ZONA",
+        "FECH_INSPECCION"
+      ],
+      "id": 9,
+      "matching_activities": [],
+      "name": "Plataforma Marina",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "LOTE",
+        "TIPO_VALVULA"
+      ],
+      "id": 14,
+      "matching_activities": [],
+      "name": "Válvulas",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "TRAMO",
+        "PROG_ILI_GEOINERCIAL",
+        "PROG_PETROPERU",
+        "ILI_GEOINERCIAL",
+        "PETROPERU",
+        "RAMAL",
+        "DIFERENCIA"
+      ],
+      "id": 17,
+      "matching_activities": [],
+      "name": "Progresivas Petroperu",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "TRAMO",
+        "PROG_ILI_GEOINERCIAL",
+        "ILI_GEOINERCIAL",
+        "PETROPERU",
+        "ALTITUD",
+        "RAMAL"
+      ],
+      "id": 18,
+      "matching_activities": [],
+      "name": "Progresivas Ili Geoinercial",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "UNIDAD_FIS",
+        "ADMINISTRA",
+        "RAZON_SOCI",
+        "DIRECCION",
+        "DEPARTAMEN",
+        "PROVINCIA",
+        "DISTRITO",
+        "OBJECTID_1"
+      ],
+      "id": 21,
+      "matching_activities": [],
+      "name": "Refinerias",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [],
+      "fields": [
+        "OBJECTID",
+        "ESTABLEC_O",
+        "RAZON_SOC",
+        "DPTO",
+        "PROVINCIA",
+        "DISTRITO"
+      ],
+      "id": 22,
+      "matching_activities": [],
+      "name": "Plantas de Lubricantes",
+      "selected": false,
+      "selection_reason": "Sin campo ACTIVIDAD comparable"
+    },
+    {
+      "activity_values": [
+        "PLANTAS ABASTECIMIENTO"
+      ],
+      "fields": [
+        "OBJECTID",
+        "RAZON_SOCIAL",
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "RUC",
+        "CPCDAD_TTAL",
+        "UNDAD_MDDA_CPCDAD",
+        "COD_OSINERGMIN",
+        "CATEGORIA_LAYER",
+        "CODIGO_DGH"
+      ],
+      "id": 24,
+      "matching_activities": [],
+      "name": "Planta de Abastecimiento",
+      "selected": false,
+      "selection_reason": "Sin coincidencia de ACTIVIDAD"
+    },
+    {
+      "activity_values": [
+        "PLANTAS ABASTECIMIENTO GLP"
+      ],
+      "fields": [
+        "OBJECTID",
+        "RAZON_SOCIAL",
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "CPCDAD_TTAL",
+        "UNDAD_MDDA_CPCDAD",
+        "CATEGORIA_LAYER"
+      ],
+      "id": 25,
+      "matching_activities": [],
+      "name": "Planta de Abastecimiento de GLP",
+      "selected": false,
+      "selection_reason": "Sin coincidencia de ACTIVIDAD"
+    },
+    {
+      "activity_values": [
+        "PLANTAS ABASTECIMIENTO AEROPUERTO"
+      ],
+      "fields": [
+        "OBJECTID",
+        "RAZON_SOCIAL",
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "RUC",
+        "CPCDAD_TTAL",
+        "UNDAD_MDDA_CPCDAD",
+        "CATEGORIA_LAYER"
+      ],
+      "id": 26,
+      "matching_activities": [],
+      "name": "Planta de Abastecimiento en Aeropuerto",
+      "selected": false,
+      "selection_reason": "Sin coincidencia de ACTIVIDAD"
+    },
+    {
+      "activity_values": [
+        "PLANTAS ENVASADORAS GLP"
+      ],
+      "fields": [
+        "OBJECTID",
+        "RAZON_SOCIAL",
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "CPCDAD_TTAL",
+        "UNDAD_MDDA_CPCDAD",
+        "COD_OSINERGMIN",
+        "CATEGORIA_LAYER",
+        "CODIGO_DGH",
+        "NU_RIESGO_VALOR",
+        "CO_RIESGO_NIVEL"
+      ],
+      "id": 28,
+      "matching_activities": [],
+      "name": "Planta Envasadora de GLP",
+      "selected": false,
+      "selection_reason": "Sin coincidencia de ACTIVIDAD"
+    },
+    {
+      "activity_values": [
+        "FEPC - EMPRESAS ENVASADORAS DE GLP"
+      ],
+      "fields": [
+        "OBJECTID",
+        "RAZON_SOCIAL",
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "RUC",
+        "CATEGORIA",
+        "CATEGORIA_LAYER",
+        "NU_RIESGO_VALOR",
+        "CO_RIESGO_NIVEL"
+      ],
+      "id": 29,
+      "matching_activities": [],
+      "name": "Planta de Almacenamiento del GLP",
+      "selected": false,
+      "selection_reason": "Sin coincidencia de ACTIVIDAD"
+    },
+    {
+      "activity_values": [
+        "CONSUMIDOR DIRECTO CON INSTALACIONES ESTRATEGICAS DE GLP CON CAPACIDAD MAYOR A 1000 GLN",
+        "CONSUMIDOR DIRECTO CON INSTALACIONES ESTRATEGICAS DE GLP CON CAPACIDAD MENOR O IGUAL A 1000 GLN",
+        "CONSUMIDOR DIRECTO CON INSTALACIONES ESTRATEGICAS TEMPORALES",
+        "CONSUMIDOR DIRECTO DE COMBUSTIBLE LÍQUIDO CON CAPACIADAD MAYOR A 50 MB",
+        "CONSUMIDOR DIRECTO DE COMBUSTIBLE LÍQUIDO CON CAPACIDAD DE 5  A 50 MB",
+        "CONSUMIDOR DIRECTO DE COMBUSTIBLE LÍQUIDO CON CAPACIDAD HASTA 5 MB",
+        "CONSUMIDOR DIRECTO DE OPDH Y COMBUSTIBLE LÍQUIDO CON CAPACIDAD DE 5 A 50 MB",
+        "CONSUMIDOR DIRECTO DE OPDH Y COMBUSTIBLE LÍQUIDO CON CAPACIDAD HASTA 5 MB",
+        "CONSUMIDORES DIRECTOS DE GLP CON CAPACIDAD MAYOR A 1000 GLN",
+        "CONSUMIDORES DIRECTOS DE GLP CON CAPACIDAD MENOR O IGUAL A 1000 GLN",
+        "CONSUMIDORES DIRECTOS DE OTROS PRODUCTOS DERIVADOS DE LOS HIDROCARBUROS"
+      ],
+      "fields": [
+        "OBJECTID",
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "RUC",
+        "ORDEN",
+        "N",
+        "CODIGO_OSI",
+        "UNIDAD",
+        "CAPACIDAD",
+        "ESTADO_ACT",
+        "ZONA",
+        "CORREO",
+        "TELEFONO",
+        "FECHA",
+        "LONGITUD_X",
+        "LATITUD_Y"
+      ],
+      "id": 32,
+      "matching_activities": [],
+      "name": "Consumidor directo",
+      "selected": false,
+      "selection_reason": "Sin coincidencia de ACTIVIDAD"
+    },
+    {
+      "activity_values": [
+        "LOCALES DE VENTA DE GLP EN CILINDROS CON CAPACIDAD MAYOR A 5,000 KG",
+        "LOCALES DE VENTA DE GLP EN CILINDROS CON CAPACIDAD MENOR O IGUAL A 5,000 KG"
+      ],
+      "fields": [
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "RUC",
+        "N",
+        "OBJECTID"
+      ],
+      "id": 34,
+      "matching_activities": [],
+      "name": "Local de venta",
+      "selected": false,
+      "selection_reason": "Sin coincidencia de ACTIVIDAD"
+    },
+    {
+      "activity_values": [
+        "EE.SS con GLP y GNV",
+        "EE.SS con GNV",
+        "ESTACIÓN DE SERVICIO CON GASOCENTRO DE GLP",
+        "ESTACIÓN DE SERVICIOS / GRIFOS"
+      ],
+      "fields": [
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "RUC",
+        "N",
+        "OBJECTID"
+      ],
+      "id": 35,
+      "matching_activities": [
+        "EE.SS con GLP y GNV",
+        "EE.SS con GNV",
+        "ESTACIÓN DE SERVICIO CON GASOCENTRO DE GLP",
+        "ESTACIÓN DE SERVICIOS / GRIFOS"
+      ],
+      "name": "Grifo y EESS",
+      "selected": true,
+      "selection_reason": "ACTIVIDAD presente en estado_actual.csv"
+    },
+    {
+      "activity_values": [
+        "ESTABLECIMIENTO DE VENTA AL PUBLICO DE GNV",
+        "GASOCENTRO DE GLP CON ESTABLECIMIENTO DE VENTA AL PUBLICO DE GNV",
+        "GASOCENTROS DE GLP"
+      ],
+      "fields": [
+        "ACTIVIDAD",
+        "DIRECCION",
+        "DEPARTAMENTO",
+        "PROVINCIA",
+        "DISTRITO",
+        "N",
+        "OBJECTID"
+      ],
+      "id": 36,
+      "matching_activities": [
+        "ESTABLECIMIENTO DE VENTA AL PUBLICO DE GNV",
+        "GASOCENTRO DE GLP CON ESTABLECIMIENTO DE VENTA AL PUBLICO DE GNV",
+        "GASOCENTROS DE GLP"
+      ],
+      "name": "Gasocentro y EVP GNV",
+      "selected": true,
+      "selection_reason": "ACTIVIDAD presente en estado_actual.csv"
+    }
+  ],
+  "source": "https://gisem.osinergmin.gob.pe/serverosih/rest/services/Hidrocarburos_Liquidos/HIDROCARBUROS_LIQUIDOS/FeatureServer",
+  "source_fingerprint": "15dc75e8901221bc13a0c08b464516f67eb615baea164a57c1730b3059fbaf6b",
+  "updated_at": "2026-09-27T00:12:35+00:00"
+}

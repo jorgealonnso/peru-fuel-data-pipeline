@@ -206,3 +206,54 @@ El backfill 2023-2026 ya fue generado y versionado en particiones mensuales Parq
 La actualización incremental ya fue validada ejecutándose directamente en GitHub Actions contra las fuentes de últimos precios de OSINERGMIN. Una segunda ejecución consecutiva no generó duplicados.
 
 La compactación mensual también queda automatizada mediante GitHub Actions, por lo que no requiere una PC encendida ni intervención manual.
+
+## Geodatos de establecimientos
+
+La geocodificación se ejecuta de forma independiente del pipeline frecuente de
+precios:
+
+```bash
+python geodata.py
+```
+
+El proceso inspecciona las capas puntuales del servicio oficial ArcGIS REST de
+OSINERGMIN, compara sus actividades con las presentes en `estado_actual.csv` y
+descarga únicamente las capas compatibles. La extracción solicita geometría en
+WGS84 (`EPSG:4326`) y pagina por lotes de `OBJECTID`, por lo que no depende del
+límite de registros de una respuesta.
+
+La asignación de coordenadas es conservadora y prioriza:
+
+1. código oficial OSINERGMIN;
+2. registro oficial;
+3. RUC + departamento + provincia + distrito + dirección normalizada;
+4. RUC + dirección normalizada;
+5. coincidencia aproximada validada y no ambigua de nombre y ubicación.
+
+Una coincidencia ambigua se deja sin coordenadas. El proceso genera:
+
+```text
+data/bi/dim_establecimiento.parquet
+data/bi/geocoding_report.json
+data/bi/geocoding_unmatched.csv
+```
+
+`dim_establecimiento.parquet` contiene una fila por `ESTABLECIMIENTO_KEY` y es
+la fuente geográfica recomendada para Power BI. `estado_actual.csv` continúa
+siendo la fuente del precio vigente y las particiones mensuales continúan
+siendo la fuente del histórico.
+
+En el modelo de Power BI se deben conservar estas relaciones de filtro simple:
+
+```text
+DimEstablecimiento[ESTABLECIMIENTO_KEY] 1 -> * EstadoActual[ESTABLECIMIENTO_KEY]
+DimEstablecimiento[ESTABLECIMIENTO_KEY] 1 -> * HistoricoPrecio[ESTABLECIMIENTO_KEY]
+```
+
+`LATITUD` y `LONGITUD` son números decimales y deben categorizarse como
+`Latitude` y `Longitude`, respectivamente.
+
+El workflow `.github/workflows/update_geodata.yml` permite ejecución manual y
+se ejecuta mensualmente, el día 5 a las 08:30 hora Lima. Si la respuesta GIS no
+cambió, conserva la marca de actualización y no reescribe los artefactos, por
+lo que no crea commits innecesarios.
